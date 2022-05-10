@@ -27,8 +27,6 @@ app.post('/send-message', (req, res) => {
     const number = req.body.number;
     const message = req.body.message;
 
-    console.log(message)
-
     client.sendMessage(number, message).then(response => {
         res.status(200).json({
             status: true,
