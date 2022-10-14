@@ -45,8 +45,8 @@ sudo yarn run build
 terdapat beberapa file environment, dengan value variable yang berbeda : 
 1. .env.development
 2. .env.development.local
-3. .env.development.prod
-4. .env
+3. .env.production (di gunakan ketika yarn run start:prod)
+4. .env (di gunakan ketika yarn run build)
 
 Running aplikasi setelah build :
 ```

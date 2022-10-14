@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "SET NODE_ENV=prod&nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "SET NODE_ENV=local&nest start",
+    "start": "SET NODE_ENV=prod&nest start",
     "start:local": "SET NODE_ENV=local&nest start --watch",
     "start:dev": "SET NODE_ENV=dev&nest start --watch",
     "start:debug": "nest start --debug --watch",
