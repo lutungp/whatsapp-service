@@ -47,6 +47,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
 
     disconnectDarbelink(data:object) {
+        console.log('disconnectDarbelink')
         this.server.emit('disconnectDarbelink', data);
     }
 }

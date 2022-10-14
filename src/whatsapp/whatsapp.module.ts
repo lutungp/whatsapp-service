@@ -15,10 +15,7 @@ import configuration from 'src/config/configuration';
     ConfigModule.forRoot({
       load: [configuration]
     }),
-    HttpModule.register({
-      timeout: 5000,
-      maxRedirects: 5,
-    })
+    HttpModule
   ],
   controllers: [WhatsappController]
 })

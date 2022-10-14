@@ -10,8 +10,7 @@ import { AppGateway } from 'src/app.gateway';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios'
 import { ConfigService } from '@nestjs/config';
-import { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { Observable, tap, map } from 'rxjs';
+import { map, lastValueFrom } from 'rxjs';
 @Injectable()
 export class WhatsappService {
 
@@ -58,12 +57,12 @@ export class WhatsappService {
                             console.log('err a');
                         });
 
-                        // this.socketService.disconnectDarbelink({ user: this.sock });
-                        const res = this.disconnectDarbeLink({ user: this.sock })
-                        console.log('res');
-                        console.log(res);
+                        this.socketService.disconnectDarbelink({ user: this.sock.user });
+                        this.disconnectDarbeLink({ user: this.sock.user })
+                        
                     } catch (error) {
-                        console.log('error');
+                        console.log('error a');
+                        console.error(error.message);
                     }
                 }
             } else if (connection === 'open') {
@@ -73,9 +72,11 @@ export class WhatsappService {
             }
 
             if (qr) {
+                console.log(qr);
                 QRCode.toDataURL(qr).then((url) => {
                     this.instance.qr = url;
                     this.socketService.sendQrCode(this.instance);
+                    console.log('sendQrCode');
                 });
             }
         });
@@ -136,21 +137,17 @@ export class WhatsappService {
         }
     }
 
-    disconnectDarbeLink(data: object): Observable<AxiosResponse<any, any>> {
-
+    async disconnectDarbeLink(data: object){
         const headersRequest = {
-            'Content-Type': 'application/json', // afaik this one is not needed
+            'Accept': 'application/json',
             'Authorization': `Bearer ${this.configService.get<string>('clientid')}`,
         };
 
-        console.log(headersRequest)
-        console.log(`${this.configService.get<string>('darbelink_url')}/api/v2/whatsapp-service/disconnect`)
-
-        return this.httpService.post(`${this.configService.get<string>('darbelink_url')}/api/v2/whatsapp-service/disconnect`, data, { headers: headersRequest })
-                    .pipe(
-                        tap((resp) => console.log(resp)),
-                        map((resp) => resp.data),
-                        tap((data) =>  console.log(data)),
-                    );
+        const response = await lastValueFrom(
+            this.httpService
+                    .post(`${this.configService.get<string>('darbelink_url')}/api/v2/whatsapp-service/disconnect`, data, { headers: headersRequest })
+                    .pipe(map((resp) => resp.data))
+        );
+        return response;
     }
 }

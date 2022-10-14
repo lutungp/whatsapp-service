@@ -18,11 +18,13 @@ export class WhatsappController {
         return await this.whatsappService.init()
     }
 
+    @UseGuards(ClientAuthGuard)
     @Post('/send-message')
     async sendMessage(@Body() data: SendMessageDto) {
         return await this.whatsappService.sendMessage(data)
     }
 
+    @UseGuards(ClientAuthGuard)
     @Post('/logout')
     async logOut() {
         return await this.whatsappService.logOut()
