@@ -42,7 +42,11 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
         this.server.emit('whatsappQrCode', data);
     }
 
-    async connected(data:object) {
+    connected(data:object) {
         this.server.emit('connected', data);
+    }
+
+    disconnectDarbelink(data:object) {
+        this.server.emit('disconnectDarbelink', data);
     }
 }

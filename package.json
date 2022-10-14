@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@adiwajshing/baileys": "^4.4.0",
+    "@nestjs/axios": "^0.1.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -33,6 +34,7 @@
     "@types/qrcode": "^1.5.0",
     "@types/qrcode-terminal": "^0.12.0",
     "@types/uuid": "^8.3.4",
+    "axios": "^1.1.2",
     "dotenv": "^16.0.2",
     "qrcode": "^1.5.1",
     "qrcode-terminal": "^0.12.0",

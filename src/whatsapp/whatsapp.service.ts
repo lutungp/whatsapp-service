@@ -3,17 +3,22 @@ import makeWASocket, { DisconnectReason, useSingleFileAuthState } from '@adiwajs
 import { Boom } from '@hapi/boom';
 import { SendMessageDto } from './dto/create-bot.dto';
 import pino from  'pino';
-import fs from 'fs'
+import * as fs from 'fs'
 
 import * as QRCode from 'qrcode'
 import { AppGateway } from 'src/app.gateway';
 import { v4 as uuidv4 } from 'uuid';
-
+import { HttpService } from '@nestjs/axios'
+import { ConfigService } from '@nestjs/config';
+import { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { Observable, tap, map } from 'rxjs';
 @Injectable()
 export class WhatsappService {
 
     constructor(
-        private socketService: AppGateway
+        private socketService: AppGateway,
+        private readonly httpService: HttpService,
+        private readonly configService: ConfigService
     ){}
 
     bots: any[] = [];
@@ -41,7 +46,6 @@ export class WhatsappService {
             const { connection, lastDisconnect, qr } = update;
             if (connection === 'close') {
                 const shouldReconnect = (lastDisconnect.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
-                console.log(DisconnectReason.loggedOut);
 
                 console.log('connection closed due to ', lastDisconnect.error, ', reconnecting ', shouldReconnect, );
                 // reconnect if not logged out
@@ -49,21 +53,26 @@ export class WhatsappService {
                     console.log('reconnect');
                     this.connectToWhatsApp();
                 } else {
-                    console.log('disconnect')
                     try {
                         fs.unlink('./auth_info_multi.json', (err) => {
-                            console.log('err');
-                        });   
+                            console.log('err a');
+                        });
+
+                        // this.socketService.disconnectDarbelink({ user: this.sock });
+                        const res = this.disconnectDarbeLink({ user: this.sock })
+                        console.log('res');
+                        console.log(res);
                     } catch (error) {
                         console.log('error');
                     }
                 }
             } else if (connection === 'open') {
-                this.socketService.connected({ user: this.sock });
+                if (fs.existsSync('./auth_info_multi.json')) {
+                    this.socketService.connected({ user: this.sock });
+                }
             }
 
             if (qr) {
-                console.log(qr)
                 QRCode.toDataURL(qr).then((url) => {
                     this.instance.qr = url;
                     this.socketService.sendQrCode(this.instance);
@@ -99,8 +108,6 @@ export class WhatsappService {
         if (!isTokenAlreadyExists) {
             this.bots.push(bot);
         }
-    
-        console.log('bots: ', this.bots);
 
         return {
           token,
@@ -122,10 +129,28 @@ export class WhatsappService {
     async logOut() {
         try {
             fs.unlink('./auth_info_multi.json', (err) => {
-                console.log('err');
+                console.log('err b');
             });    
         } catch (error) {
             console.log('error');
         }
+    }
+
+    disconnectDarbeLink(data: object): Observable<AxiosResponse<any, any>> {
+
+        const headersRequest = {
+            'Content-Type': 'application/json', // afaik this one is not needed
+            'Authorization': `Bearer ${this.configService.get<string>('clientid')}`,
+        };
+
+        console.log(headersRequest)
+        console.log(`${this.configService.get<string>('darbelink_url')}/api/v2/whatsapp-service/disconnect`)
+
+        return this.httpService.post(`${this.configService.get<string>('darbelink_url')}/api/v2/whatsapp-service/disconnect`, data, { headers: headersRequest })
+                    .pipe(
+                        tap((resp) => console.log(resp)),
+                        map((resp) => resp.data),
+                        tap((data) =>  console.log(data)),
+                    );
     }
 }
