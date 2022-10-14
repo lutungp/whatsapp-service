@@ -8,7 +8,7 @@ import { ClientAuthGuard } from './guards/client.guard';
 
 @WebSocketGateway({ 
     cors: {
-        origin: "http://localhost:8002",
+        origin: "*",
         credentials: true
     },
     allowEIO3: true 
