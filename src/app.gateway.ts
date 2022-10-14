@@ -6,13 +6,7 @@ import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, OnGat
 import { Logger, UseGuards } from '@nestjs/common';
 import { ClientAuthGuard } from './guards/client.guard';
 
-@WebSocketGateway({ 
-    cors: {
-        origin: "*",
-        credentials: true
-    },
-    allowEIO3: true 
-})
+@WebSocketGateway({ cors: true })
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
