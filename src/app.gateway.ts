@@ -3,15 +3,15 @@ https://docs.nestjs.com/websockets/gateways#gateways
 */
 
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
-import { Logger, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { ClientAuthGuard } from './guards/client.guard';
+import { Server } from 'socket.io';
 
 @WebSocketGateway(81, { transports: ['websocket'] })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
     @WebSocketServer()
-    server: any;
-    private logger: Logger = new Logger('AppGateway');
+    server: Server;
 
     @UseGuards(ClientAuthGuard)
     @SubscribeMessage('events')
