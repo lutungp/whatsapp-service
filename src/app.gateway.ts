@@ -8,10 +8,8 @@ import { ClientAuthGuard } from './guards/client.guard';
 
 @WebSocketGateway({ 
     cors: {
-        origin: "https://api-dev.internaldarbegroup.com",
-        credentials: true
-    },
-    allowEIO3: true 
+        origin: `*`
+    }
   })
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
