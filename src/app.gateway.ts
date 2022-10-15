@@ -35,7 +35,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
     }
 
     afterInit(server: any) {
-        console.log('Socket is live')
+        console.log('Socket is love')
     }
 
     async sendQrCode(data:object) {
