@@ -8,8 +8,10 @@ import { ClientAuthGuard } from './guards/client.guard';
 
 @WebSocketGateway({ 
     cors: {
-        origin: `*`
-    }
+        origin: "*",
+        credentials: true
+    },
+    allowEIO3: true 
   })
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
