@@ -7,7 +7,14 @@ import { UseGuards } from '@nestjs/common';
 import { ClientAuthGuard } from './guards/client.guard';
 import { Server } from 'socket.io';
 
-@WebSocketGateway(81, { transports: ['websocket'] })
+@WebSocketGateway({ 
+    cors: {
+        origin: "*",
+        credentials: true
+    },
+    allowEIO3: true 
+})
+
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
     @WebSocketServer()
